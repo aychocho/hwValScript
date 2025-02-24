@@ -28,12 +28,10 @@ function kernel_mod_sig_check() {
         # using find for later because modinfo is comically easy to compromise
         file_path=$(find /lib/modules/$(uname -r)/ -name "$module.ko")
         if [[ $file_path == "" ]]; then
-            echo "Error module not found most likely tampering"
-            return 1
+            echo "Error! $module not found, shenanigans likely!"
         fi
         if ! dpkg -S "$file_path"; then
-            echo "Module not from dpkg"
-            return 1
+            echo "Module $module not from dpkg"
         fi
         # might want to refactor this script later
         perl /tmp/extract-kernel-sig.pl -s $file_path > /tmp/$module-sig.bin
